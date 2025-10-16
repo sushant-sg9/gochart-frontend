@@ -1,0 +1,141 @@
+/* Hide TradingView branding and watermarks */
+.sourcesWrapper-l31H9iuA {
+    display: none !important;
+}
+
+.sources-l31H9iuA {
+    display: none !important;
+}
+
+/* Hide TradingView attribution */
+.tv-attribution {
+    display: none !important;
+}
+
+.tv-attribution__link {
+    display: none !important;
+}
+
+/* Modern chart container with updated color scheme */
+.tradingview-widget-container {
+    position: relative;
+    background: rgb(2, 6, 23);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(30, 41, 59, 0.5);
+    z-index: 1;
+}
+
+.tradingview-widget-container__widget {
+    background: transparent;
+    border-radius: 12px;
+}
+
+/* Remove any TradingView promotional content */
+.tv-embed-widget-wrapper {
+    background: transparent !important;
+}
+
+/* Ensure clean chart display */
+.tradingview-widget-container iframe {
+    border: none !important;
+    background: transparent !important;
+    border-radius: 12px;
+    z-index: 1 !important;
+}
+
+/* Hide any promotional banners */
+.tv-screener-popup,
+.tv-dialogue-modal,
+.tv-toast-logger,
+.tv-floating-toolbar {
+    display: none !important;
+}
+
+/* Modern scrollbars */
+.tradingview-widget-container *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.tradingview-widget-container *::-webkit-scrollbar-track {
+    background: rgba(30, 41, 59, 0.3);
+    border-radius: 4px;
+}
+
+.tradingview-widget-container *::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.4);
+    border-radius: 4px;
+    transition: background 0.15s ease;
+}
+
+.tradingview-widget-container *::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.6);
+}
+
+/* Animation delay utility */
+@keyframes spin-delayed {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animation-delay-150 {
+    animation-delay: 150ms;
+}
+
+/* Enhanced loading animation */
+@keyframes pulse-glow {
+    0%, 100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .tradingview-widget-container {
+        border-radius: 8px;
+        box-shadow: 
+            0 4px 12px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(59, 130, 246, 0.1);
+    }
+    
+    .tradingview-widget-container__widget {
+        border-radius: 8px;
+    }
+    
+    .tradingview-widget-container iframe {
+        border-radius: 8px;
+    }
+}
+
+/* Dark theme enhancements */
+@media (prefers-color-scheme: dark) {
+    .tradingview-widget-container {
+        box-shadow: 
+            0 10px 25px rgba(0, 0, 0, 0.6),
+            0 0 0 1px rgba(59, 130, 246, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+}
+
+/* Loading overlay improvements */
+.tradingview-widget-container .loading-overlay {
+    backdrop-filter: blur(8px);
+    background: rgba(2, 6, 23, 0.95);
+}
