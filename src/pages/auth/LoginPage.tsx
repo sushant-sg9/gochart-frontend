@@ -26,7 +26,6 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import { useToast } from '../../context/ToastContext';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import SessionConflictModal from '../../components/auth/SessionConflictModal';
 import { api } from '../../services/api';
 
 interface SignupFormData {
@@ -60,13 +59,9 @@ const LoginPage: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   
-  // Session conflict state
-  const [showSessionConflict, setShowSessionConflict] = useState(false);
-  const [sessionConflictData, setSessionConflictData] = useState<any>(null);
-  const [pendingCredentials, setPendingCredentials] = useState<{email: string, password: string} | null>(null);
   
   const navigate = useNavigate();
-  const { login, user, forceLogin, terminateSession } = useUser();
+  const { login, user } = useUser();
   const { error: showError, success: showSuccess } = useToast();
 
 
@@ -169,10 +164,7 @@ const LoginPage: React.FC = () => {
     } catch (error: any) {
       // Handle session conflict
       if (error.code === 'SESSION_LIMIT_EXCEEDED') {
-        setSessionConflictData(error.data);
-        setPendingCredentials({ email, password });
-        setShowSessionConflict(true);
-        showError('Device Limit Reached', error.message);
+        showError('Device Limit Exceeded', 'You are already signed in on 2 devices. Please contact our support team to clear your sessions or sign out from other devices.');
       } else {
         showError('Login failed', error.message || 'Invalid credentials');
       }
@@ -181,54 +173,6 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  // Session conflict handlers
-  const handleForceLogin = async () => {
-    if (!pendingCredentials) return;
-    
-    try {
-      await forceLogin(pendingCredentials.email, pendingCredentials.password);
-      setShowSessionConflict(false);
-      setPendingCredentials(null);
-      setSessionConflictData(null);
-      showSuccess('Login successful!');
-      navigate('/analysis');
-    } catch (error: any) {
-      showError('Force login failed', error.message);
-    }
-  };
-
-  const handleTerminateSession = async (sessionId: string) => {
-    try {
-      await terminateSession(sessionId);
-      showSuccess('Session terminated successfully');
-      
-      // Update the session list
-      if (sessionConflictData) {
-        const updatedSessions = sessionConflictData.activeSessions.filter(
-          (session: any) => session.sessionId !== sessionId
-        );
-        setSessionConflictData({ ...sessionConflictData, activeSessions: updatedSessions });
-        
-        // If only one session left, allow login
-        if (updatedSessions.length < sessionConflictData.maxSessions && pendingCredentials) {
-          await login(pendingCredentials.email, pendingCredentials.password);
-          setShowSessionConflict(false);
-          setPendingCredentials(null);
-          setSessionConflictData(null);
-          showSuccess('Login successful!');
-          navigate('/analysis');
-        }
-      }
-    } catch (error: any) {
-      showError('Failed to terminate session', error.message);
-    }
-  };
-
-  const handleCloseSessionModal = () => {
-    setShowSessionConflict(false);
-    setPendingCredentials(null);
-    setSessionConflictData(null);
-  };
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1053,17 +997,6 @@ const LoginPage: React.FC = () => {
         </div>
       )}
 
-      {/* Session Conflict Modal */}
-      {showSessionConflict && sessionConflictData && (
-        <SessionConflictModal
-          isOpen={showSessionConflict}
-          onClose={handleCloseSessionModal}
-          activeSessions={sessionConflictData.activeSessions}
-          onForceLogin={handleForceLogin}
-          onTerminateSession={handleTerminateSession}
-          loading={isLoggingIn}
-        />
-      )}
     </>
   );
 };

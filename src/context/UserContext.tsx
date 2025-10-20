@@ -53,7 +53,6 @@ interface UserContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  forceLogin: (email: string, password: string) => Promise<void>;
   terminateSession: (sessionId: string) => Promise<void>;
   terminateAllOtherSessions: () => Promise<void>;
   getActiveSessions: () => Promise<any[]>;
@@ -125,24 +124,6 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
-  const forceLogin = async (email: string, password: string) => {
-    try {
-      setLoading(true);
-      const response = await api.post("/auth/force-login", { email, password });
-      
-      if (response.success) {
-        const { user, token } = response.data;
-        localStorage.setItem("authToken", token);
-        setUser(user);
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (error: any) {
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const terminateSession = async (sessionId: string) => {
     try {
@@ -242,7 +223,6 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     user,
     loading,
     login,
-    forceLogin,
     terminateSession,
     terminateAllOtherSessions,
     getActiveSessions,

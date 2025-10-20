@@ -29,7 +29,8 @@ export const API_CONFIG = {
       UPDATE_SUBSCRIPTION: '/admin/change-sub-months',
       UPDATE_PAYMENT_INFO: '/admin/update-payment-info',
       CREATE_PAYMENT_INFO: '/admin/create-payment-info',
-      DELETE_PAYMENT_INFO: '/admin/payment-info'
+      DELETE_PAYMENT_INFO: '/admin/payment-info',
+      DELETE_USER_SESSIONS: '/admin/delete-user-sessions'
     }
   }
 };

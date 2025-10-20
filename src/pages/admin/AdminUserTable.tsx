@@ -7,9 +7,9 @@ import {
   RefreshCw,
   Download,
   UserX,
-  Key,
   Calendar,
-  Crown
+  Crown,
+  Smartphone
 } from "lucide-react";
 import { getApiUrl } from '../../config/apiConfig';
 import { useToast } from '../../context/ToastContext';
@@ -55,13 +55,11 @@ const AdminUserTable: React.FC = () => {
     startDate: '',
     endDate: ''
   });
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [passwordModalUser, setPasswordModalUser] = useState<User | null>(null);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [subscriptionModalUser, setSubscriptionModalUser] = useState<User | null>(null);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [newSubscriptionMonths, setNewSubscriptionMonths] = useState('');
+  const [showDeleteSessionsModal, setShowDeleteSessionsModal] = useState(false);
+  const [deleteSessionsUser, setDeleteSessionsUser] = useState<User | null>(null);
   
   const itemsPerPage = 10;
   const { error: showError, success: showSuccess } = useToast();
@@ -185,45 +183,6 @@ const AdminUserTable: React.FC = () => {
     }
   };
 
-  const handlePasswordReset = async () => {
-    if (!passwordModalUser) return;
-    
-    if (newPassword !== confirmPassword) {
-      showError('Passwords do not match');
-      return;
-    }
-    
-    if (newPassword.length < 6) {
-      showError('Password must be at least 6 characters long');
-      return;
-    }
-
-    try {
-      const response = await fetch(getApiUrl('AUTH', 'FORGOT_PASSWORD'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: passwordModalUser.email,
-          newPassword
-        }),
-      });
-
-      if (response.ok) {
-        showSuccess('Password updated successfully');
-        setShowPasswordModal(false);
-        setNewPassword('');
-        setConfirmPassword('');
-        setPasswordModalUser(null);
-      } else {
-        const data = await response.json();
-        showError(data.message);
-      }
-    } catch (error) {
-      showError('Failed to update password');
-    }
-  };
 
   const handleSubscriptionUpdate = async () => {
     if (!subscriptionModalUser) return;
@@ -257,6 +216,33 @@ const AdminUserTable: React.FC = () => {
       }
     } catch (error) {
       showError('Failed to update subscription');
+    }
+  };
+
+  const handleDeleteUserSessions = async () => {
+    if (!deleteSessionsUser) return;
+
+    try {
+      const response = await fetch(getApiUrl('ADMIN', 'DELETE_USER_SESSIONS'), {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: deleteSessionsUser._id
+        }),
+      });
+
+      if (response.ok) {
+        showSuccess('All user sessions deleted successfully');
+        setShowDeleteSessionsModal(false);
+        setDeleteSessionsUser(null);
+      } else {
+        const data = await response.json();
+        showError(data.message);
+      }
+    } catch (error) {
+      showError('Failed to delete user sessions');
     }
   };
 
@@ -564,16 +550,15 @@ const AdminUserTable: React.FC = () => {
                             <UserX size={16} />
                           </button>
                         )}
-                        
                         <button
                           onClick={() => {
-                            setPasswordModalUser(user);
-                            setShowPasswordModal(true);
+                            setDeleteSessionsUser(user);
+                            setShowDeleteSessionsModal(true);
                           }}
-                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 rounded-lg transition-colors"
-                          title="Reset Password"
+                          className="p-2 text-orange-400 hover:text-orange-300 hover:bg-orange-400/10 rounded-lg transition-colors"
+                          title="Delete All Sessions"
                         >
-                          <Key size={16} />
+                          <Smartphone size={16} />
                         </button>
                         
                         {user.subscriptionMonths > 0 && (
@@ -687,16 +672,15 @@ const AdminUserTable: React.FC = () => {
                     <span>Suspend</span>
                   </button>
                 )}
-                
                 <button
                   onClick={() => {
-                    setPasswordModalUser(user);
-                    setShowPasswordModal(true);
+                    setDeleteSessionsUser(user);
+                    setShowDeleteSessionsModal(true);
                   }}
-                  className="flex items-center space-x-2 px-3 py-2 text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 rounded-lg transition-colors text-sm"
+                  className="flex items-center space-x-2 px-3 py-2 text-orange-400 hover:text-orange-300 hover:bg-orange-400/10 rounded-lg transition-colors text-sm"
                 >
-                  <Key size={14} />
-                  <span>Reset</span>
+                  <Smartphone size={14} />
+                  <span>Sessions</span>
                 </button>
                 
                 {user.subscriptionMonths > 0 && (
@@ -760,61 +744,6 @@ const AdminUserTable: React.FC = () => {
         )}
       </div>
 
-      {/* Password Reset Modal */}
-      {showPasswordModal && passwordModalUser && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold text-white mb-4">Reset Password</h2>
-            <div className="mb-4">
-              <p className="text-green-400 font-medium">{passwordModalUser.email}</p>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-slate-300 text-sm font-medium mb-2">New Password</label>
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter new password"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-slate-300 text-sm font-medium mb-2">Confirm Password</label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Confirm new password"
-                />
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-end space-x-3 mt-6">
-              <button
-                onClick={() => {
-                  setShowPasswordModal(false);
-                  setPasswordModalUser(null);
-                  setNewPassword('');
-                  setConfirmPassword('');
-                }}
-                className="px-4 py-2 text-slate-400 hover:text-white transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handlePasswordReset}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-              >
-                Reset Password
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Subscription Update Modal */}
       {showSubscriptionModal && subscriptionModalUser && (
@@ -857,6 +786,52 @@ const AdminUserTable: React.FC = () => {
                 className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
               >
                 Update Subscription
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Sessions Modal */}
+      {showDeleteSessionsModal && deleteSessionsUser && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold text-white mb-4">Delete All Sessions</h2>
+            <div className="mb-4">
+              <p className="text-green-400 font-medium">{deleteSessionsUser.name}</p>
+              <p className="text-slate-400 text-sm">{deleteSessionsUser.email}</p>
+            </div>
+            
+            <div className="bg-orange-900/30 border border-orange-700/50 rounded-lg p-4 mb-6">
+              <div className="flex items-start space-x-3">
+                <div className="bg-orange-500/20 p-1 rounded">
+                  <Smartphone className="w-4 h-4 text-orange-400" />
+                </div>
+                <div className="text-sm text-orange-200">
+                  <p className="font-medium mb-1">Warning</p>
+                  <p className="text-orange-300">
+                    This will immediately sign out the user from all devices and sessions. 
+                    They will need to log in again.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-end space-x-3">
+              <button
+                onClick={() => {
+                  setShowDeleteSessionsModal(false);
+                  setDeleteSessionsUser(null);
+                }}
+                className="px-4 py-2 text-slate-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteUserSessions}
+                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
+              >
+                Delete All Sessions
               </button>
             </div>
           </div>
