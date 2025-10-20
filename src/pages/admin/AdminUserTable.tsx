@@ -11,7 +11,7 @@ import {
   Crown,
   Smartphone
 } from "lucide-react";
-import { getApiUrl } from '../../config/apiConfig';
+import { api } from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 
 interface User {
@@ -67,10 +67,7 @@ const AdminUserTable: React.FC = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch(getApiUrl('ADMIN', 'BASE'), {
-        credentials: 'include',
-      });
-      const data = await response.json();
+      const data = await api.get('/admin');
       
       console.log('API Response:', data);
       
@@ -161,16 +158,7 @@ const AdminUserTable: React.FC = () => {
         payload.status = false;
       }
 
-      const response = await fetch(getApiUrl('ADMIN', 'USER_STATUS'), {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
+      const result = await api.post('/admin/userstatus', payload);
       
       if (result.statuscode === 200) {
         showSuccess(result.message);
@@ -193,26 +181,19 @@ const AdminUserTable: React.FC = () => {
     }
 
     try {
-      const response = await fetch(getApiUrl('ADMIN', 'UPDATE_SUBSCRIPTION'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: subscriptionModalUser.email,
-          months: parseInt(newSubscriptionMonths)
-        }),
+      const result = await api.post('/admin/change-sub-months', {
+        email: subscriptionModalUser.email,
+        months: parseInt(newSubscriptionMonths)
       });
 
-      if (response.ok) {
-        showSuccess('Subscription updated successfully');
+      if (result.success) {
+        showSuccess(result.message || 'Subscription updated successfully');
         setShowSubscriptionModal(false);
         setNewSubscriptionMonths('');
         setSubscriptionModalUser(null);
         fetchUsers();
       } else {
-        const data = await response.json();
-        showError(data.message);
+        showError(result.message || 'Failed to update subscription');
       }
     } catch (error) {
       showError('Failed to update subscription');
@@ -223,23 +204,16 @@ const AdminUserTable: React.FC = () => {
     if (!deleteSessionsUser) return;
 
     try {
-      const response = await fetch(getApiUrl('ADMIN', 'DELETE_USER_SESSIONS'), {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: deleteSessionsUser._id
-        }),
+      const result = await api.delete('/admin/delete-user-sessions', {
+        userId: deleteSessionsUser._id
       });
 
-      if (response.ok) {
-        showSuccess('All user sessions deleted successfully');
+      if (result.success) {
+        showSuccess(result.message || 'All user sessions deleted successfully');
         setShowDeleteSessionsModal(false);
         setDeleteSessionsUser(null);
       } else {
-        const data = await response.json();
-        showError(data.message);
+        showError(result.message || 'Failed to delete user sessions');
       }
     } catch (error) {
       showError('Failed to delete user sessions');

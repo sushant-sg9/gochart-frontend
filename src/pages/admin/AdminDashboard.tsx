@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Users, UserPlus, CreditCard, TrendingUp, Activity, Clock, CheckCircle, RefreshCw } from 'lucide-react';
-import { getApiUrl } from '../../config/apiConfig';
+import { api } from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 
 interface DashboardStats {
@@ -28,33 +28,10 @@ const AdminDashboard: React.FC = () => {
     try {
       setIsLoading(true);
       
-      console.log('Fetching dashboard stats from:', getApiUrl('ADMIN', 'BASE'));
+      console.log('Fetching dashboard stats from admin endpoint');
       
-      // Fetch users data
-      const usersResponse = await fetch(getApiUrl('ADMIN', 'BASE'), {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      console.log('Response status:', usersResponse.status);
-      console.log('Response headers:', Object.fromEntries(usersResponse.headers));
-      
-      if (!usersResponse.ok) {
-        let errorMessage = `HTTP error! status: ${usersResponse.status}`;
-        try {
-          const errorData = await usersResponse.json();
-          console.log('Error response:', errorData);
-          errorMessage = errorData.message || errorMessage;
-        } catch (e) {
-          console.log('Could not parse error response as JSON');
-        }
-        throw new Error(errorMessage);
-      }
-      
-      const responseData = await usersResponse.json();
+      // Fetch users data using the configured API service
+      const responseData = await api.get('/admin');
       
       console.log('Admin dashboard API response:', responseData);
       console.log('Response type:', typeof responseData);

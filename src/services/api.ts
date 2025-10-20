@@ -75,9 +75,9 @@ export const api = {
     }
   },
 
-  async delete(endpoint: string) {
+  async delete(endpoint: string, data?: any) {
     try {
-      const response = await axiosInstance.delete(endpoint);
+      const response = await axiosInstance.delete(endpoint, { data });
       return response.data;
     } catch (error: any) {
       throw error.response?.data || error.message;

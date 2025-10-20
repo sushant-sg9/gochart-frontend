@@ -7,7 +7,7 @@ import {
   Download,
   RefreshCw
 } from 'lucide-react';
-import { getApiUrl, API_CONFIG } from '../../config/apiConfig';
+import { api } from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 
 interface UserRequest {
@@ -51,10 +51,7 @@ const AdminRequestUser: React.FC = () => {
   const fetchUserRequests = async () => {
     try {
       setLoading(true);
-      const response = await fetch(getApiUrl('ADMIN', 'BASE'), {
-        credentials: 'include',
-      });
-      const data = await response.json();
+      const data = await api.get('/admin');
       
       if (data.success && data.data && Array.isArray(data.data.users)) {
         // Filter users who have submitted payment requests (have UTR and are pending)
@@ -121,21 +118,12 @@ const AdminRequestUser: React.FC = () => {
       const endDate = new Date(startDate);
       endDate.setMonth(endDate.getMonth() + subscriptionMonths);
 
-      const response = await fetch(`${API_CONFIG.BASE_URL}/user/${requestId}/subscription`, {
-        method: 'PUT',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          isPremium: true,
-          status: 'paid',
-          premiumStartDate: startDate.toISOString(),
-          premiumEndDate: endDate.toISOString(),
-        }),
+      const result = await api.put(`/user/${requestId}/subscription`, {
+        isPremium: true,
+        status: 'paid',
+        premiumStartDate: startDate.toISOString(),
+        premiumEndDate: endDate.toISOString(),
       });
-
-      const result = await response.json();
       
       if (result.success) {
         showSuccess('Payment request approved successfully');
@@ -155,19 +143,10 @@ const AdminRequestUser: React.FC = () => {
     
     setProcessingRequest(requestId);
     try {
-      const response = await fetch(`${API_CONFIG.BASE_URL}/user/${requestId}/subscription`, {
-        method: 'PUT',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          status: 'cancel',
-          isPremium: false,
-        }),
+      const result = await api.put(`/user/${requestId}/subscription`, {
+        status: 'cancel',
+        isPremium: false,
       });
-
-      const result = await response.json();
       
       if (result.success) {
         showSuccess('Payment request rejected');
