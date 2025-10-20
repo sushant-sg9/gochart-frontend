@@ -63,6 +63,7 @@ import AdminUserTable from "../pages/admin/AdminUserTable";
 import AdminRequestUser from "../pages/admin/AdminRequestUser";
 import AdminUpdatePayment from "../pages/admin/AdminUpdatePayment";
 import AdminResetPassword from "../pages/admin/AdminResetPassword";
+import AdminQuotexConnection from "../pages/admin/AdminQuotexConnection";
 
 export const router = createBrowserRouter([
   {
@@ -271,6 +272,10 @@ export const router = createBrowserRouter([
           {
             path: "reset-password",
             element: <AdminResetPassword />,
+          },
+          {
+            path: "quotex-connection",
+            element: <AdminQuotexConnection />,
           },
         ],
       },

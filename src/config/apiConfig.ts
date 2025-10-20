@@ -40,6 +40,8 @@ export const PYTHON_API_CONFIG = {
   ENDPOINTS: {
     HEALTH: '/health',
     CONNECT: '/connect',
+    OTP: '/otp',
+    EMAIL_CONFIG: '/email-config',
     EURUSD_CANDLES: '/eurusd/candles',
     EURUSD_REALTIME: '/eurusd/realtime',
     USDCAD_CANDLES: '/usdcad/candles',

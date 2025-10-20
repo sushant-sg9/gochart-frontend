@@ -8,7 +8,8 @@ import {
   BarChart3, 
   LogOut,
   Menu,
-  X
+  X,
+  Wifi
 } from "lucide-react";
 import { useState } from "react";
 
@@ -22,6 +23,7 @@ const AdminLayout: React.FC = () => {
     { name: "User Requests", href: "/admin/user-requests", icon: UserCheck },
     { name: "Update Payment", href: "/admin/update-payment", icon: CreditCard },
     { name: "Reset Password", href: "/admin/reset-password", icon: Key },
+    { name: "API Connection", href: "/admin/quotex-connection", icon: Wifi },
   ];
 
   const handleLogout = () => {

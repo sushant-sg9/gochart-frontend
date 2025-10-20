@@ -73,62 +73,59 @@ const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-zinc-900 text-white p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 text-white p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">My Profile</h1>
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">My Profile</h1>
           <p className="text-gray-400">Manage your account information and preferences</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Profile Overview Card */}
-          <div className="lg:col-span-2 bg-gray-800/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl">
-            <div className="flex items-start justify-between mb-6">
-              <div className="flex items-center space-x-4">
-                <div className={`w-16 h-16 ${subscriptionStatus.bgColor} rounded-full flex items-center justify-center shadow-lg`}>
-                  <subscriptionStatus.icon className="w-8 h-8 text-white" />
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+          {/* Profile Overview - Spans 2 columns on XL screens */}
+          <div className="xl:col-span-2">
+            <div className="bg-slate-900/70 backdrop-blur-xl rounded-2xl p-6 border border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-300">
+              {/* Profile Header */}
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center space-x-4">
+                  <div className={`w-14 h-14 ${subscriptionStatus.bgColor} rounded-full flex items-center justify-center shadow-lg ring-4 ring-white/10`}>
+                    <subscriptionStatus.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-white">{user.name}</h2>
+                    <p className={`text-sm ${subscriptionStatus.color} flex items-center mt-1`}>
+                      <subscriptionStatus.icon className="w-3 h-3 mr-2" />
+                      {subscriptionStatus.text}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-white">{user.name}</h2>
-                  <p className={`text-sm ${subscriptionStatus.color} flex items-center`}>
-                    <subscriptionStatus.icon className="w-4 h-4 mr-2" />
-                    {subscriptionStatus.text}
-                  </p>
+                <div className="flex items-center space-x-2">
+                  {user.isEmailVerified === true ? (
+                    <div className="flex items-center text-green-400 bg-green-400/10 px-3 py-1 rounded-full">
+                      <FaCheckCircle className="w-3 h-3 mr-1" />
+                      <span className="text-xs font-medium">Verified</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center text-red-400 bg-red-400/10 px-3 py-1 rounded-full">
+                      <FaTimesCircle className="w-3 h-3 mr-1" />
+                      <span className="text-xs font-medium">Unverified</span>
+                    </div>
+                  )}
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                {user.isEmailVerified === true ? (
-                  <div className="flex items-center text-green-400">
-                    <FaCheckCircle className="w-4 h-4 mr-1" />
-                    <span className="text-sm">Verified</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center text-red-400">
-                    <FaTimesCircle className="w-4 h-4 mr-1" />
-                    <span className="text-sm">Unverified</span>
-                  </div>
-                )}
-              </div>
-            </div>
 
-            {/* Personal Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-                <FaUser className="w-5 h-5 mr-2 text-blue-400" />
-                Personal Information
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gray-700/30 rounded-lg p-4">
+              {/* Personal Information Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 hover:border-slate-600/50 transition-colors">
                   <div className="flex items-center text-gray-400 mb-2">
                     <FaEnvelope className="w-4 h-4 mr-2" />
                     <span className="text-sm">Email Address</span>
                   </div>
-                  <p className="text-white font-medium">{user.email}</p>
+                  <p className="text-white font-medium truncate">{user.email}</p>
                 </div>
 
-                <div className="bg-gray-700/30 rounded-lg p-4">
+                <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 hover:border-slate-600/50 transition-colors">
                   <div className="flex items-center text-gray-400 mb-2">
                     <FaPhone className="w-4 h-4 mr-2" />
                     <span className="text-sm">Phone Number</span>
@@ -136,7 +133,7 @@ const ProfilePage: React.FC = () => {
                   <p className="text-white font-medium">{user.phone}</p>
                 </div>
 
-                <div className="bg-gray-700/30 rounded-lg p-4">
+                <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 hover:border-slate-600/50 transition-colors">
                   <div className="flex items-center text-gray-400 mb-2">
                     <FaShieldAlt className="w-4 h-4 mr-2" />
                     <span className="text-sm">Account Role</span>
@@ -144,31 +141,30 @@ const ProfilePage: React.FC = () => {
                   <p className="text-white font-medium capitalize">{user.role}</p>
                 </div>
 
-                <div className="bg-gray-700/30 rounded-lg p-4">
+                <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 hover:border-slate-600/50 transition-colors">
                   <div className="flex items-center text-gray-400 mb-2">
                     <FaCalendarAlt className="w-4 h-4 mr-2" />
                     <span className="text-sm">Member Since</span>
                   </div>
-                  <p className="text-white font-medium">{formatDate(user.createdAt)}</p>
+                  <p className="text-white font-medium text-sm">{new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Subscription & Account Status */}
-          <div className="space-y-6">
-            {/* Subscription Status */}
-            <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl">
+          {/* Subscription Information */}
+          <div className="xl:col-span-1">
+            <div className="bg-slate-900/70 backdrop-blur-xl rounded-2xl p-6 border border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-300 h-fit">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
                 <FaCrown className="w-5 h-5 mr-2 text-yellow-400" />
                 Subscription
               </h3>
               
-              <div className="space-y-4">
-                <div className="bg-gray-700/30 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
+              <div className="space-y-3">
+                <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                  <div className="flex items-center justify-between">
                     <span className="text-gray-400 text-sm">Status</span>
-                    <span className={`text-sm font-medium ${subscriptionStatus.color}`}>
+                    <span className={`text-sm font-medium px-2 py-1 rounded-full ${subscriptionStatus.color} ${subscriptionStatus.bgColor}/20`}>
                       {subscriptionStatus.text}
                     </span>
                   </div>
@@ -176,24 +172,24 @@ const ProfilePage: React.FC = () => {
 
                 {user.isPremium && (
                   <>
-                    <div className="bg-gray-700/30 rounded-lg p-4">
-                      <div className="text-gray-400 text-sm mb-2">Premium Start Date</div>
-                      <div className="text-white font-medium">
-                        {formatDate(user.premiumStartDate)}
+                    <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                      <div className="text-gray-400 text-sm mb-1">Premium Start</div>
+                      <div className="text-white font-medium text-sm">
+                        {new Date(user.premiumStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </div>
                     </div>
 
-                    <div className="bg-gray-700/30 rounded-lg p-4">
-                      <div className="text-gray-400 text-sm mb-2">Premium End Date</div>
-                      <div className="text-white font-medium">
-                        {formatDate(user.premiumEndDate)}
+                    <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                      <div className="text-gray-400 text-sm mb-1">Premium End</div>
+                      <div className="text-white font-medium text-sm">
+                        {new Date(user.premiumEndDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </div>
                     </div>
 
                     {user.subscriptionMonths && (
-                      <div className="bg-gray-700/30 rounded-lg p-4">
-                        <div className="text-gray-400 text-sm mb-2">Subscription Period</div>
-                        <div className="text-white font-medium">
+                      <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                        <div className="text-gray-400 text-sm mb-1">Period</div>
+                        <div className="text-white font-medium text-sm">
                           {user.subscriptionMonths} {user.subscriptionMonths === 1 ? 'month' : 'months'}
                         </div>
                       </div>
@@ -201,110 +197,95 @@ const ProfilePage: React.FC = () => {
                   </>
                 )}
 
-                {user.paymentType && (
-                  <div className="bg-gray-700/30 rounded-lg p-4">
-                    <div className="text-gray-400 text-sm mb-2">Payment Type</div>
-                    <div className="text-white font-medium capitalize">{user.paymentType}</div>
-                  </div>
-                )}
-
                 {user.paymentAmount && (
-                  <div className="bg-gray-700/30 rounded-lg p-4">
-                    <div className="text-gray-400 text-sm mb-2">Payment Amount</div>
+                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                    <div className="text-gray-400 text-sm mb-1">Amount</div>
                     <div className="text-white font-medium">₹{user.paymentAmount}</div>
                   </div>
                 )}
 
-                {user.transactionId && (
-                  <div className="bg-gray-700/30 rounded-lg p-4">
-                    <div className="text-gray-400 text-sm mb-2">Transaction ID</div>
-                    <div className="text-white font-medium text-xs break-all">{user.transactionId}</div>
-                  </div>
-                )}
-
                 {user.utrNo && (
-                  <div className="bg-gray-700/30 rounded-lg p-4">
-                    <div className="text-gray-400 text-sm mb-2">UTR Number</div>
-                    <div className="text-white font-medium">{user.utrNo}</div>
+                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                    <div className="text-gray-400 text-sm mb-1">UTR Number</div>
+                    <div className="text-white font-medium text-sm">{user.utrNo}</div>
                   </div>
                 )}
               </div>
             </div>
+          </div>
 
-            {/* Account Security */}
-            <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl">
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-                <FaShieldAlt className="w-5 h-5 mr-2 text-green-400" />
-                Account Security
-              </h3>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
-                  <div className="flex items-center">
-                    {user.isActive === true ? (
-                      <FaUnlock className="w-4 h-4 text-green-400 mr-3" />
-                    ) : (
-                      <FaLock className="w-4 h-4 text-red-400 mr-3" />
-                    )}
-                    <span className="text-white text-sm">Account Status</span>
+          {/* Account Security & Actions */}
+          <div className="xl:col-span-1">
+            <div className="space-y-6">
+              {/* Security Status */}
+              <div className="bg-slate-900/70 backdrop-blur-xl rounded-2xl p-6 border border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-300">
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+                  <FaShieldAlt className="w-5 h-5 mr-2 text-green-400" />
+                  Security
+                </h3>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                    <div className="flex items-center">
+                      {user.isActive === true ? (
+                        <FaUnlock className="w-4 h-4 text-green-400 mr-3" />
+                      ) : (
+                        <FaLock className="w-4 h-4 text-red-400 mr-3" />
+                      )}
+                      <span className="text-white text-sm">Account</span>
+                    </div>
+                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${user.isActive === true ? 'text-green-400 bg-green-400/20' : 'text-red-400 bg-red-400/20'}`}>
+                      {user.isActive === true ? 'Active' : 'Inactive'}
+                    </span>
                   </div>
-                  <span className={`text-sm font-medium ${user.isActive === true ? 'text-green-400' : 'text-red-400'}`}>
-                    {user.isActive === true ? 'Active' : 'Inactive'}
-                  </span>
+
+                  <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                    <div className="flex items-center">
+                      {user.isEmailVerified === true ? (
+                        <FaCheckCircle className="w-4 h-4 text-green-400 mr-3" />
+                      ) : (
+                        <FaTimesCircle className="w-4 h-4 text-red-400 mr-3" />
+                      )}
+                      <span className="text-white text-sm">Email</span>
+                    </div>
+                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${user.isEmailVerified === true ? 'text-green-400 bg-green-400/20' : 'text-red-400 bg-red-400/20'}`}>
+                      {user.isEmailVerified === true ? 'Verified' : 'Unverified'}
+                    </span>
+                  </div>
                 </div>
+              </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
-                  <div className="flex items-center">
-                    {user.isEmailVerified === true ? (
-                      <FaCheckCircle className="w-4 h-4 text-green-400 mr-3" />
-                    ) : (
-                      <FaTimesCircle className="w-4 h-4 text-red-400 mr-3" />
-                    )}
-                    <span className="text-white text-sm">Email Verification</span>
-                  </div>
-                  <span className={`text-sm font-medium ${user.isEmailVerified === true ? 'text-green-400' : 'text-red-400'}`}>
-                    {user.isEmailVerified === true ? 'Verified' : 'Unverified'}
-                  </span>
-                </div>
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <button
+                  onClick={() => window.open("https://telegram.me/gocharts", "_blank")}
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-3 rounded-xl font-semibold transition-all transform hover:scale-[1.02] shadow-lg flex items-center justify-center border border-blue-500/20"
+                >
+                  <FaPhone className="w-4 h-4 mr-2" />
+                  Contact Support
+                </button>
 
-                {user.lastActivity && (
-                  <div className="bg-gray-700/30 rounded-lg p-4">
-                    <div className="text-gray-400 text-sm mb-2">Last Activity</div>
-                    <div className="text-white font-medium">{formatDate(user.lastActivity)}</div>
-                  </div>
-                )}
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-gray-600 disabled:to-gray-700 text-white px-4 py-3 rounded-xl font-semibold transition-all transform hover:scale-[1.02] shadow-lg flex items-center justify-center border border-red-500/20"
+                >
+                  {isLoggingOut ? (
+                    <LoadingSpinner size="sm" />
+                  ) : (
+                    <>
+                      <FaSignOutAlt className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </>
+                  )}
+                </button>
               </div>
             </div>
-
-            {/* Support Button */}
-            <button
-              onClick={() => window.open("https://telegram.me/gocharts", "_blank")}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg flex items-center justify-center"
-            >
-              <FaPhone className="w-4 h-4 mr-2" />
-              Contact Support
-            </button>
-
-            {/* Logout Button */}
-            <button
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-gray-600 disabled:to-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg flex items-center justify-center"
-            >
-              {isLoggingOut ? (
-                <LoadingSpinner size="sm" />
-              ) : (
-                <>
-                  <FaSignOutAlt className="w-4 h-4 mr-2" />
-                  Sign Out
-                </>
-              )}
-            </button>
           </div>
         </div>
 
         {/* Session Management Section - Full Width */}
-        <div className="mt-6">
+        <div className="mt-8">
           <SessionManager />
         </div>
       </div>

@@ -23,7 +23,7 @@ interface DeviceInfo {
   userAgent: string;
   platform: string;
   browser: string;
-  deviceType: string;
+  deviceType?: string;
   ipAddress?: string;
 }
 
@@ -56,7 +56,8 @@ const SessionConflictModal: React.FC<SessionConflictModalProps> = ({
   if (!isOpen) return null;
 
   // Device type icon
-  const getDeviceIcon = (deviceType: string) => {
+  const getDeviceIcon = (deviceType?: string) => {
+    if (!deviceType) return <FaDesktop className="w-5 h-5" />;
     switch (deviceType.toLowerCase()) {
       case 'mobile': return <FaMobile className="w-5 h-5" />;
       case 'tablet': return <FaTabletAlt className="w-5 h-5" />;
@@ -65,7 +66,8 @@ const SessionConflictModal: React.FC<SessionConflictModalProps> = ({
   };
 
   // Browser icon
-  const getBrowserIcon = (browser: string) => {
+  const getBrowserIcon = (browser?: string) => {
+    if (!browser) return <FaGlobe className="w-4 h-4 text-gray-500" />;
     switch (browser.toLowerCase()) {
       case 'chrome': return <FaChrome className="w-4 h-4 text-yellow-500" />;
       case 'firefox': return <FaFirefox className="w-4 h-4 text-orange-500" />;
@@ -77,7 +79,8 @@ const SessionConflictModal: React.FC<SessionConflictModalProps> = ({
   };
 
   // Platform icon
-  const getPlatformIcon = (platform: string) => {
+  const getPlatformIcon = (platform?: string) => {
+    if (!platform) return <FaGlobe className="w-4 h-4 text-gray-500" />;
     switch (platform.toLowerCase()) {
       case 'windows': return <FaWindows className="w-4 h-4 text-blue-500" />;
       case 'macos': return <FaApple className="w-4 h-4 text-gray-600" />;
@@ -149,7 +152,7 @@ const SessionConflictModal: React.FC<SessionConflictModalProps> = ({
                       <div className="flex items-center space-x-2 mb-2">
                         {getPlatformIcon(session.deviceInfo.platform)}
                         <span className="text-white font-medium">
-                          {session.deviceInfo.platform} • {session.deviceInfo.deviceType}
+                          {session.deviceInfo.platform}{session.deviceInfo.deviceType ? ` • ${session.deviceInfo.deviceType}` : ''}
                         </span>
                         {getBrowserIcon(session.deviceInfo.browser)}
                         <span className="text-gray-300 text-sm">{session.deviceInfo.browser}</span>
