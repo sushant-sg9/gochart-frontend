@@ -146,7 +146,7 @@ const ProfilePage: React.FC = () => {
                     <FaCalendarAlt className="w-4 h-4 mr-2" />
                     <span className="text-sm">Member Since</span>
                   </div>
-                  <p className="text-white font-medium text-sm">{new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                  <p className="text-white font-medium text-sm">{user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Not set'}</p>
                 </div>
               </div>
             </div>
@@ -175,14 +175,14 @@ const ProfilePage: React.FC = () => {
                     <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
                       <div className="text-gray-400 text-sm mb-1">Premium Start</div>
                       <div className="text-white font-medium text-sm">
-                        {new Date(user.premiumStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        {user.premiumStartDate ? new Date(user.premiumStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Not set'}
                       </div>
                     </div>
 
                     <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
                       <div className="text-gray-400 text-sm mb-1">Premium End</div>
                       <div className="text-white font-medium text-sm">
-                        {new Date(user.premiumEndDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        {user.premiumEndDate ? new Date(user.premiumEndDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Not set'}
                       </div>
                     </div>
 
