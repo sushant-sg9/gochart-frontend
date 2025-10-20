@@ -39,16 +39,6 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  const formatDate = (dateString: string | Date | null | undefined) => {
-    if (!dateString) return 'Not set';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
 
   const getSubscriptionStatus = () => {
     if (!user) return { text: "Loading...", color: "text-gray-400", bgColor: "bg-gray-600", icon: FaClock };

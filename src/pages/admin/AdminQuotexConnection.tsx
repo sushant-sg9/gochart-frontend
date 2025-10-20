@@ -25,10 +25,6 @@ const AdminQuotexConnection: React.FC = () => {
   const [otpRequired, setOtpRequired] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [lastChecked, setLastChecked] = useState<string>("");
-  const [emailConfig, setEmailConfig] = useState<{configured: boolean, email?: string}>({ configured: false });
-  const [showEmailConfig, setShowEmailConfig] = useState(false);
-  const [emailSettings, setEmailSettings] = useState({ email: "", app_password: "" });
-  const [isSavingEmail, setIsSavingEmail] = useState(false);
   const { success, error } = useToast();
 
   // Check connection status
@@ -131,56 +127,9 @@ const AdminQuotexConnection: React.FC = () => {
     }
   };
 
-  // Check email configuration
-  const checkEmailConfig = async () => {
-    try {
-      const response = await fetch(`${PYTHON_API_CONFIG.BASE_URL}${PYTHON_API_CONFIG.ENDPOINTS.EMAIL_CONFIG}`);
-      const data = await response.json();
-      setEmailConfig(data);
-    } catch (err) {
-      console.error("Error checking email config:", err);
-    }
-  };
-
-  // Save email configuration
-  const saveEmailConfig = async () => {
-    if (!emailSettings.email || !emailSettings.app_password) {
-      error("Please enter both email and app password");
-      return;
-    }
-
-    setIsSavingEmail(true);
-    try {
-      const response = await fetch(`${PYTHON_API_CONFIG.BASE_URL}${PYTHON_API_CONFIG.ENDPOINTS.EMAIL_CONFIG}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(emailSettings),
-      });
-
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        success("Email configuration saved successfully!");
-        setShowEmailConfig(false);
-        setEmailSettings({ email: "", app_password: "" });
-        checkEmailConfig(); // Refresh status
-      } else {
-        error(data.error || "Failed to save email configuration");
-      }
-    } catch (err) {
-      console.error("Error saving email config:", err);
-      error("Failed to save email configuration");
-    } finally {
-      setIsSavingEmail(false);
-    }
-  };
-
-  // Check status and email config on component mount
+  // Check status on component mount
   useEffect(() => {
     checkConnectionStatus();
-    checkEmailConfig();
     
     // Set up periodic status check every 30 seconds
     const interval = setInterval(checkConnectionStatus, 30000);
