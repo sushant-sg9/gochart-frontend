@@ -65,6 +65,17 @@ const SignupPage: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    
+    // For phone field, only allow digits and limit to 10 characters
+    if (name === 'phone') {
+      const digitsOnly = value.replace(/\D/g, '').slice(0, 10);
+      setFormData(prev => ({
+        ...prev,
+        [name]: digitsOnly
+      }));
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -92,8 +103,13 @@ const SignupPage: React.FC = () => {
       return false;
     }
     
-    if (!/^[\d\-\+\(\)\s]{10,}$/.test(formData.phone.replace(/\s/g, ''))) {
-      showError('Please enter a valid phone number');
+    if (formData.phone.length !== 10) {
+      showError('Phone number must be exactly 10 digits');
+      return false;
+    }
+    
+    if (!/^\d{10}$/.test(formData.phone)) {
+      showError('Phone number must contain only digits');
       return false;
     }
     
@@ -383,8 +399,9 @@ const SignupPage: React.FC = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
+                    maxLength={10}
                     className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-white placeholder-gray-400"
-                    placeholder="Enter your phone number"
+                    placeholder="Enter 10-digit mobile number"
                     required
                   />
                 </div>

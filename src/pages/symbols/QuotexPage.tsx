@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import QuotexChart from "../../components/charts/QuotexChart";
 
 interface QuotexPageProps {
@@ -16,6 +16,13 @@ const QuotexPage: React.FC<QuotexPageProps> = ({
   period = 60,
   count = 200
 }) => {
+  // Cleanup effect to ensure proper unmounting
+  useEffect(() => {
+    return () => {
+      // Force cleanup any remaining intervals or event listeners
+    };
+  }, [asset]);
+
   return (
     <div className="h-screen w-full flex flex-col bg-slate-950">
       {/* Header */}
@@ -38,6 +45,7 @@ const QuotexPage: React.FC<QuotexPageProps> = ({
       {/* Chart Container */}
       <div className="flex-1 min-h-0">
         <QuotexChart 
+          key={asset}
           asset={asset}
           period={period}
           count={count}

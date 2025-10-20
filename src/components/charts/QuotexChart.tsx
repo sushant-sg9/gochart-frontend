@@ -266,11 +266,18 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
     window.addEventListener('resize', handleResize);
 
     return () => {
+      // Clear intervals first to prevent memory leaks
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      
       window.removeEventListener('resize', handleResize);
       try { chart.current?.timeScale().unsubscribeVisibleTimeRangeChange(handleVisibleRangeChange); } catch(e) {}
       try { chart.current?.unsubscribeCrosshairMove(handleCrosshairMove); } catch(e) {}
       if (chart.current) {
         chart.current.remove();
+        chart.current = null;
       }
     };
   }, []);
@@ -429,17 +436,24 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
 
   // Auto-refresh setup
   useEffect(() => {
+    // Clear any existing interval first
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
     if (autoRefresh && !isLoading) {
       intervalRef.current = setInterval(() => {
         fetchCandleData();
       }, refreshInterval);
-
-      return () => {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-        }
-      };
     }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, [autoRefresh, refreshInterval, isLoading, currentTimeframe]);
 
   // Manual refresh handler
@@ -569,7 +583,9 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
       <div
         ref={chartContainerRef}
         className="h-full w-full"
-        style={{ height: '100%', width: '100%' }}
+        style={{ height: '100%', width: '100%', touchAction: 'pan-x pan-y' }}
+        onMouseDown={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       />
 
       {/* Small volume labels overlay */}
