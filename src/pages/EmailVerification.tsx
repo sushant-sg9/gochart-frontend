@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Mail, CheckCircle, XCircle, RefreshCw, Key } from 'lucide-react';
+import { Mail, CheckCircle, RefreshCw, Key } from 'lucide-react';
 import axios from 'axios';
 
 const EmailVerification = () => {

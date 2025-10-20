@@ -169,7 +169,7 @@ const SessionConflictModal: React.FC<SessionConflictModalProps> = ({
                     className="bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2"
                   >
                     {terminating === session.sessionId ? (
-                      <LoadingSpinner size="xs" />
+                      <LoadingSpinner size="sm" />
                     ) : (
                       <>
                         <FaSignOutAlt className="w-3 h-3" />

@@ -138,10 +138,10 @@ const ModernSidebarNav: React.FC<ModernSidebarNavProps> = ({ isOpen, onClose }) 
         item.label.toLowerCase().includes(searchQuery.toLowerCase())
       );
       if (filteredItems.length > 0) {
-        acc[key] = { ...category, items: filteredItems };
+        (acc as any)[key] = { ...category, items: filteredItems };
       }
     } else {
-      acc[key] = category;
+      (acc as any)[key] = category;
     }
     return acc;
   }, {} as typeof tradingCategories);

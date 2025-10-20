@@ -12,9 +12,6 @@ import {
   Wallet,
   X,
   Save,
-  CheckCircle,
-  AlertTriangle,
-  Eye
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { useToast } from '../../context/ToastContext';

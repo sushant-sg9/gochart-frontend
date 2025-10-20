@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { 
   FaChartLine, 
   FaUser, 
   FaCog, 
-  FaSignOutAlt, 
   FaStar,
   FaClock,
   FaCalendarAlt,
@@ -32,8 +31,7 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({ onToggleNav }) => {
 
   const { user } = useUser();
   const { getTimeFrameLabel, timeFrame } = useTimeFrameContext();
-  const { success: showSuccess } = useToast();
-  const navigate = useNavigate();
+  const { } = useToast();
 
   // Update time every second
   useEffect(() => {

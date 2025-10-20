@@ -16,6 +16,10 @@ interface User {
   paymentAmount?: number;
   transactionId?: string;
   utrNo?: string;
+  createdAt?: string;
+  isEmailVerified?: boolean;
+  isActive?: boolean;
+  lastActivity?: string;
 }
 
 interface RegisterData {

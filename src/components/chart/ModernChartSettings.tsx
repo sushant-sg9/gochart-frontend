@@ -100,7 +100,7 @@ export const ModernChartSettings: React.FC<ModernChartSettingsProps> = ({ isOpen
           <div className="space-y-3">
             {indicatorData.map((indicator) => {
               const Icon = indicator.icon;
-              const isEnabled = chartIndicator[indicator.key];
+              const isEnabled = (chartIndicator as any)[indicator.key];
               
               return (
                 <div

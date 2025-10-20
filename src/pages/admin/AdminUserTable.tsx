@@ -1,27 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { 
   Search, 
-  Filter, 
-  Calendar, 
-  ChevronDown, 
-  Users, 
-  Mail, 
-  Phone, 
-  Crown, 
-  CreditCard, 
-  Clock, 
   CheckCircle, 
   XCircle, 
-  AlertCircle,
-  Eye,
   Edit,
-  Trash2,
-  MoreHorizontal,
   RefreshCw,
   Download,
-  UserCheck,
   UserX,
-  Key
+  Key,
+  Calendar,
+  Crown
 } from "lucide-react";
 import { getApiUrl } from '../../config/apiConfig';
 import { useToast } from '../../context/ToastContext';
@@ -67,7 +55,6 @@ const AdminUserTable: React.FC = () => {
     startDate: '',
     endDate: ''
   });
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordModalUser, setPasswordModalUser] = useState<User | null>(null);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);

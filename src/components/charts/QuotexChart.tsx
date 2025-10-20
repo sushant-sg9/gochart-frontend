@@ -4,6 +4,7 @@ import { createChart } from 'lightweight-charts';
 import { getPythonApiUrl } from '../../config/apiConfig';
 import axios from 'axios';
 import { BinaryOptionsIndicator, By2BarsIndicator, IndicatorControls, useIndicators } from './Indicators';
+import type { IndicatorSettings } from './Indicators';
 
 // Define data types for lightweight-charts
 interface CandlestickData {
@@ -120,7 +121,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [hoveredCandleSum, setHoveredCandleSum] = useState<string | null>(null);
   const [currentTimeframe, setCurrentTimeframe] = useState(period);
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<number | null>(null);
   const candleDataRef = useRef<CandlestickData[]>([]);
   const [allMarkers, setAllMarkers] = useState<any[]>([]);
   
@@ -533,7 +534,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
         chart={chart.current}
         candlestickSeries={candlestickSeries.current}
         enabled={getIndicatorSettings('by2bars').enabled}
-        settings={getIndicatorSettings('by2bars').settings}
+        settings={getIndicatorSettings('by2bars').settings as IndicatorSettings['by2bars']['settings']}
         updateMarkers={(markers: any[]) => updateIndicatorMarkers('by2bars', markers)}
         clearMarkers={() => clearIndicatorMarkers('by2bars')}
       />

@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
   Search,
-  Filter,
-  Calendar,
-  Users,
-  Mail,
-  Phone,
-  CreditCard,
-  Clock,
   CheckCircle,
   XCircle,
   AlertCircle,
-  Eye,
-  MoreHorizontal,
-  RefreshCw,
   Download,
-  FileText,
-  DollarSign,
-  Hash,
-  User,
-  Calendar as CalendarIcon
+  RefreshCw
 } from 'lucide-react';
 import { getApiUrl, API_CONFIG } from '../../config/apiConfig';
 import { useToast } from '../../context/ToastContext';
@@ -57,7 +43,6 @@ const AdminRequestUser: React.FC = () => {
     startDate: '',
     endDate: ''
   });
-  const [selectedRequests, setSelectedRequests] = useState<string[]>([]);
   const [processingRequest, setProcessingRequest] = useState<string | null>(null);
   
   const itemsPerPage = 10;
@@ -381,7 +366,7 @@ const AdminRequestUser: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-700/50">
-                  {currentRequests.map((request, index) => (
+                  {currentRequests.map((request) => (
                     <tr key={request._id} className="hover:bg-slate-700/20 transition-colors">
                       <td className="py-4 px-6">
                         <div className="flex items-center space-x-3">
@@ -445,7 +430,7 @@ const AdminRequestUser: React.FC = () => {
 
           {/* Mobile Cards */}
           <div className="lg:hidden divide-y divide-slate-700/50">
-            {currentRequests.map((request, index) => (
+            {currentRequests.map((request) => (
               <div key={request._id} className="p-4 hover:bg-slate-700/10 transition-colors">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center space-x-3">

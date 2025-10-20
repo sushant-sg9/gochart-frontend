@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ChevronDown, TrendingUp, Coins, Activity, Building, Zap, Menu } from 'lucide-react';
+import { ChevronDown, TrendingUp, Coins, Activity, Building, Zap } from 'lucide-react';
 
 const TradingNav: React.FC = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -185,7 +185,7 @@ const TradingNav: React.FC = () => {
                   <div className="absolute top-full left-0 mt-1 w-56 bg-slate-800/98 backdrop-blur-xl border border-slate-700/50 rounded-xl shadow-2xl z-[9999] ring-1 ring-black/10">
                     <div className="py-2">
                       {/* Popular Section */}
-                      {category.items.some(item => item.popular) && (
+                      {category.items.some((item: any) => item.popular) && (
                         <>
                           <div className="px-4 py-2">
                             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
@@ -193,7 +193,7 @@ const TradingNav: React.FC = () => {
                             </span>
                           </div>
                           {category.items
-                            .filter(item => item.popular)
+                            .filter((item: any) => item.popular)
                             .map((item) => (
                               <Link
                                 key={item.path}
@@ -223,7 +223,7 @@ const TradingNav: React.FC = () => {
                         </span>
                       </div>
                       {category.items
-                        .filter(item => !item.popular)
+                        .filter((item: any) => !item.popular)
                         .map((item) => (
                           <Link
                             key={item.path}

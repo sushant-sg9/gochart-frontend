@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, UserPlus, CreditCard, TrendingUp, Activity, Clock, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
+import { Users, UserPlus, CreditCard, TrendingUp, Activity, Clock, CheckCircle, RefreshCw } from 'lucide-react';
 import { getApiUrl } from '../../config/apiConfig';
 import { useToast } from '../../context/ToastContext';
 
@@ -98,9 +98,9 @@ const AdminDashboard: React.FC = () => {
         
         // Calculate stats from users data
         const totalUsers = usersData.length;
-        const premiumUsers = usersData.filter(user => user.isPremium && user.status === 'paid').length;
-        const pendingPayments = usersData.filter(user => user.status === 'pending').length;
-        const newUsersToday = usersData.filter(user => {
+        const premiumUsers = usersData.filter((user: any) => user.isPremium && user.status === 'paid').length;
+        const pendingPayments = usersData.filter((user: any) => user.status === 'pending').length;
+        const newUsersToday = usersData.filter((user: any) => {
           const userDate = new Date(user.createdAt || user.premiumStartDate);
           return userDate >= today;
         }).length;
@@ -109,8 +109,8 @@ const AdminDashboard: React.FC = () => {
         const activeUsers = Math.floor(premiumUsers * 0.7); // Assume 70% of premium users are active
         
         // Calculate monthly revenue (simplified - you might need actual revenue data)
-        const cryptoUsers = usersData.filter(user => user.paymentType === 'crypto' && user.status === 'paid').length;
-        const regularUsers = usersData.filter(user => (user.paymentType === 'upi' || user.paymentType === 'bank') && user.status === 'paid').length;
+        const cryptoUsers = usersData.filter((user: any) => user.paymentType === 'crypto' && user.status === 'paid').length;
+        const regularUsers = usersData.filter((user: any) => (user.paymentType === 'upi' || user.paymentType === 'bank') && user.status === 'paid').length;
         const monthlyRevenue = (cryptoUsers * 50) + (regularUsers * 2000); // Estimated prices
         
         setStats({

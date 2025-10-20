@@ -39,7 +39,6 @@ interface SignupFormData {
 
 const LoginPage: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [signupStep, setSignupStep] = useState<'details' | 'otp'>('details');
@@ -67,14 +66,9 @@ const LoginPage: React.FC = () => {
   const [pendingCredentials, setPendingCredentials] = useState<{email: string, password: string} | null>(null);
   
   const navigate = useNavigate();
-  const { login, register, user, forceLogin, terminateSession } = useUser();
+  const { login, user, forceLogin, terminateSession } = useUser();
   const { error: showError, success: showSuccess } = useToast();
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     if (user) {
@@ -683,7 +677,7 @@ const LoginPage: React.FC = () => {
           </div>
         </footer>
 
-        <style jsx>{`
+        <style>{`
           @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }

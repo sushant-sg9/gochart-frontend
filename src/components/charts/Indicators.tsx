@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 // Define candlestick data type
 interface CandlestickData {
@@ -11,7 +11,7 @@ interface CandlestickData {
 }
 
 // Types for indicator settings
-interface IndicatorSettings {
+export interface IndicatorSettings {
   binaryOptions: {
     enabled: boolean;
     settings: {
@@ -98,8 +98,6 @@ interface BinaryOptionsIndicatorProps {
 
 export const BinaryOptionsIndicator: React.FC<BinaryOptionsIndicatorProps> = ({
   candleData,
-  chart,
-  candlestickSeries,
   enabled,
   settings,
   updateMarkers,
@@ -110,7 +108,7 @@ export const BinaryOptionsIndicator: React.FC<BinaryOptionsIndicatorProps> = ({
   const calculateIndicatorSignals = useCallback((candles: CandlestickData[]) => {
     if (!candles || candles.length < 2) return [];
     
-    const signals = [];
+    const signals: any[] = [];
     
     if (!settings.showSignals) return signals;
     
@@ -247,7 +245,6 @@ interface By2BarsIndicatorProps {
 export const By2BarsIndicator: React.FC<By2BarsIndicatorProps> = ({
   candleData,
   chart,
-  candlestickSeries,
   enabled,
   settings,
   updateMarkers,
@@ -504,7 +501,6 @@ interface IndicatorControlsProps {
 export const IndicatorControls: React.FC<IndicatorControlsProps> = ({
   indicatorSettings,
   toggleIndicator,
-  updateIndicatorSettings,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 

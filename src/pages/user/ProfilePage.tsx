@@ -8,11 +8,9 @@ import {
   FaCrown,
   FaShieldAlt,
   FaSignOutAlt,
-  FaEdit,
   FaCheckCircle,
   FaTimesCircle,
   FaClock,
-  FaGlobe,
   FaLock,
   FaUnlock
 } from 'react-icons/fa';
@@ -41,7 +39,7 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  const formatDate = (dateString: string | null) => {
+  const formatDate = (dateString: string | Date | null | undefined) => {
     if (!dateString) return 'Not set';
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -100,7 +98,7 @@ const ProfilePage: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                {user.isEmailVerified ? (
+                {user.isEmailVerified === true ? (
                   <div className="flex items-center text-green-400">
                     <FaCheckCircle className="w-4 h-4 mr-1" />
                     <span className="text-sm">Verified</span>
@@ -243,29 +241,29 @@ const ProfilePage: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
                   <div className="flex items-center">
-                    {user.isActive ? (
+                    {user.isActive === true ? (
                       <FaUnlock className="w-4 h-4 text-green-400 mr-3" />
                     ) : (
                       <FaLock className="w-4 h-4 text-red-400 mr-3" />
                     )}
                     <span className="text-white text-sm">Account Status</span>
                   </div>
-                  <span className={`text-sm font-medium ${user.isActive ? 'text-green-400' : 'text-red-400'}`}>
-                    {user.isActive ? 'Active' : 'Inactive'}
+                  <span className={`text-sm font-medium ${user.isActive === true ? 'text-green-400' : 'text-red-400'}`}>
+                    {user.isActive === true ? 'Active' : 'Inactive'}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
                   <div className="flex items-center">
-                    {user.isEmailVerified ? (
+                    {user.isEmailVerified === true ? (
                       <FaCheckCircle className="w-4 h-4 text-green-400 mr-3" />
                     ) : (
                       <FaTimesCircle className="w-4 h-4 text-red-400 mr-3" />
                     )}
                     <span className="text-white text-sm">Email Verification</span>
                   </div>
-                  <span className={`text-sm font-medium ${user.isEmailVerified ? 'text-green-400' : 'text-red-400'}`}>
-                    {user.isEmailVerified ? 'Verified' : 'Unverified'}
+                  <span className={`text-sm font-medium ${user.isEmailVerified === true ? 'text-green-400' : 'text-red-400'}`}>
+                    {user.isEmailVerified === true ? 'Verified' : 'Unverified'}
                   </span>
                 </div>
 
