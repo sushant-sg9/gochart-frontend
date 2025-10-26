@@ -125,6 +125,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
   const candleDataRef = useRef<CandlestickData[]>([]);
   const [allMarkers, setAllMarkers] = useState<any[]>([]);
   const isMountedRef = useRef<boolean>(true);
+  const abortControllerRef = useRef<AbortController | null>(null);
   
   // Indicator management
   const { 
@@ -272,6 +273,12 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
       // Mark as unmounted to prevent state updates
       isMountedRef.current = false;
       
+      // Cancel any pending requests
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+      
       // Clear intervals first to prevent memory leaks
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -341,6 +348,14 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
     // Don't fetch if component is unmounted
     if (!isMountedRef.current) return false;
     
+    // Cancel previous request if still pending
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Create new abort controller for this request
+    abortControllerRef.current = new AbortController();
+    
     try {
       setError(null);
       // Determine API endpoint based on asset
@@ -370,7 +385,8 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
           period: currentTimeframe,
           count
         },
-        timeout: 10000 // 10 second timeout
+        timeout: 10000, // 10 second timeout
+        signal: abortControllerRef.current.signal
       });
 
       console.log('API Response:', {
@@ -434,6 +450,12 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
         throw new Error(response.data.error || 'Failed to fetch data');
       }
     } catch (err: any) {
+      // Ignore abort errors - they're intentional
+      if (err.name === 'CanceledError' || err.code === 'ERR_CANCELED') {
+        console.log('Request cancelled');
+        return false;
+      }
+      
       console.error('Error fetching candle data:', err);
       // Only update state if component is still mounted
       if (!isMountedRef.current) return false;

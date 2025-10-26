@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import QuotexChart from "../../components/charts/QuotexChart";
 
 interface QuotexPageProps {
@@ -16,9 +16,14 @@ const QuotexPage: React.FC<QuotexPageProps> = ({
   period = 60,
   count = 200
 }) => {
+  const isMountedRef = useRef(true);
+  
   // Cleanup effect to ensure proper unmounting
   useEffect(() => {
+    isMountedRef.current = true;
+    
     return () => {
+      isMountedRef.current = false;
       // Force cleanup any remaining intervals or event listeners
     };
   }, [asset]);
