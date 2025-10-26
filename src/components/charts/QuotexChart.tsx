@@ -640,8 +640,6 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
         ref={chartContainerRef}
         className="h-full w-full"
         style={{ height: '100%', width: '100%', touchAction: 'pan-x pan-y' }}
-        onMouseDown={(e) => e.stopPropagation()}
-        onClick={(e) => e.stopPropagation()}
       />
 
       {/* Small volume labels overlay */}

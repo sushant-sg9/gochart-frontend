@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import QuotexChart from "../../components/charts/QuotexChart";
 
@@ -19,21 +19,28 @@ const QuotexPage: React.FC<QuotexPageProps> = ({
 }) => {
   const isMountedRef = useRef(true);
   const location = useLocation();
+  const [shouldRenderChart, setShouldRenderChart] = useState(true);
   
   // Cleanup effect to ensure proper unmounting
   useEffect(() => {
     isMountedRef.current = true;
+    setShouldRenderChart(true);
     
     return () => {
-      isMountedRef.current = false;
-      // Force cleanup any remaining intervals or event listeners
       console.log('QuotexPage unmounting for asset:', asset);
+      // Force chart to unmount IMMEDIATELY
+      setShouldRenderChart(false);
+      isMountedRef.current = false;
     };
   }, [asset]);
   
-  // Monitor location changes
+  // Monitor location changes and force unmount if navigating away from quotex routes
   useEffect(() => {
     console.log('QuotexPage location:', location.pathname);
+    if (!location.pathname.includes('quotex')) {
+      console.log('Navigating away from Quotex, forcing unmount');
+      setShouldRenderChart(false);
+    }
   }, [location]);
 
   return (
@@ -57,14 +64,20 @@ const QuotexPage: React.FC<QuotexPageProps> = ({
 
       {/* Chart Container */}
       <div className="flex-1 min-h-0">
-        <QuotexChart 
-          key={`${asset}-${location.pathname}`}
-          asset={asset}
-          period={period}
-          count={count}
-          autoRefresh={true}
-          refreshInterval={5000}
-        />
+        {shouldRenderChart ? (
+          <QuotexChart 
+            key={`${asset}-${location.pathname}`}
+            asset={asset}
+            period={period}
+            count={count}
+            autoRefresh={true}
+            refreshInterval={5000}
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-slate-400">Loading...</div>
+          </div>
+        )}
       </div>
 
       {/* Footer Info */}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, Suspense } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { ModernHeader } from "./ModernHeader";
 import { ModernFooter } from "./ModernFooter";
@@ -25,9 +25,15 @@ export const MainLayout: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950">
       <ModernHeader onToggleNav={handleToggleNav} />
       <ModernSidebarNav isOpen={isSidebarOpen} onClose={handleCloseSidebar} />
-      <main className="flex-1" key={location.pathname}>
-        <Outlet />
-      </main>
+      <Suspense fallback={
+        <div className="flex-1 flex items-center justify-center min-h-screen">
+          <div className="text-white">Loading...</div>
+        </div>
+      }>
+        <main className="flex-1" key={location.pathname}>
+          <Outlet />
+        </main>
+      </Suspense>
       <ModernFooter />
     </div>
   );
