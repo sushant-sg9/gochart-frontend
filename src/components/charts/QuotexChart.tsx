@@ -126,6 +126,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
   const [allMarkers, setAllMarkers] = useState<any[]>([]);
   const isMountedRef = useRef<boolean>(true);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const isCleaningUpRef = useRef<boolean>(false);
   
   // Indicator management
   const { 
@@ -152,6 +153,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
 
   // Apply all markers to candlestick series
   useEffect(() => {
+    if (isCleaningUpRef.current || !isMountedRef.current) return;
     if (candlestickSeries.current && allMarkers) {
       try {
         // Remove source tags before applying to chart
@@ -273,7 +275,8 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
     return () => {
       console.log('QuotexChart cleanup starting for asset:', asset);
       
-      // IMMEDIATELY mark as unmounted to prevent any further operations
+      // IMMEDIATELY mark as cleaning up and unmounted to prevent any further operations
+      isCleaningUpRef.current = true;
       isMountedRef.current = false;
       
       // Cancel any pending requests FIRST
@@ -313,8 +316,16 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
     };
   }, [asset]); // Add asset as dependency to recreate chart when asset changes
 
+  // Format timeframe for display
+  const formatTimeframe = useCallback((seconds: number) => {
+    if (seconds < 60) return `${seconds}s`;
+    const minutes = seconds / 60;
+    return `${minutes}m`;
+  }, []);
+
   // Render small numeric labels above all volume bars
-  function renderVolumeLabels() {
+  const renderVolumeLabels = useCallback(() => {
+    if (isCleaningUpRef.current || !isMountedRef.current) return;
     const overlay = volumeLabelsRef.current;
     if (!overlay || !chart.current || !volumeSeries.current || !chartContainerRef.current) return;
     const ts = chart.current.timeScale();
@@ -359,12 +370,15 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
       label.style.whiteSpace = 'nowrap';
       overlay.appendChild(label);
     }
-  }
+  }, []);
 
   // Fetch candle data from Python API
   const fetchCandleData = useCallback(async () => {
-    // Don't fetch if component is unmounted
-    if (!isMountedRef.current) return false;
+    // Don't fetch if component is unmounted or cleaning up
+    if (isCleaningUpRef.current || !isMountedRef.current) {
+      console.log('Fetch blocked - component unmounted or cleaning up');
+      return false;
+    }
     
     // Cancel previous request if still pending
     if (abortControllerRef.current) {
@@ -481,7 +495,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
       setIsLoading(false);
       return false;
     }
-  }, [asset, currentTimeframe, count]);
+  }, [asset, currentTimeframe, count, formatTimeframe, renderVolumeLabels]);
 
   // Initial data load
   useEffect(() => {
@@ -516,7 +530,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
 
   // Manual refresh handler
   const handleRefresh = useCallback(() => {
-    if (isMountedRef.current) {
+    if (!isCleaningUpRef.current && isMountedRef.current) {
       setIsLoading(true);
       fetchCandleData();
     }
@@ -524,25 +538,13 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
 
   // Timeframe change handler
   const handleTimeframeChange = useCallback((newTimeframe: number) => {
-    if (isMountedRef.current) {
-      console.log(`Changing timeframe from ${currentTimeframe}s to ${newTimeframe}s`);
-      setCurrentTimeframe(newTimeframe);
-      setIsLoading(true);
-      setError(null); // Clear any previous errors
-    }
+    if (isCleaningUpRef.current || !isMountedRef.current) return;
+    console.log(`Changing timeframe from ${currentTimeframe}s to ${newTimeframe}s`);
+    setCurrentTimeframe(newTimeframe);
+    setIsLoading(true);
+    setError(null); // Clear any previous errors
   }, [currentTimeframe]);
 
-  // Format timeframe for display
-  const formatTimeframe = (seconds: number) => {
-    if (seconds < 60) return `${seconds}s`;
-    const minutes = seconds / 60;
-    return `${minutes}m`;
-  };
-  
-  // Don't render if unmounted
-  if (!isMountedRef.current) {
-    return null;
-  }
 
   return (
     <div className="relative h-full w-full bg-slate-950" style={{ pointerEvents: 'auto' }}>
