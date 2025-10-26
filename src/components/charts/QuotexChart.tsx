@@ -124,6 +124,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
   const intervalRef = useRef<number | null>(null);
   const candleDataRef = useRef<CandlestickData[]>([]);
   const [allMarkers, setAllMarkers] = useState<any[]>([]);
+  const isMountedRef = useRef<boolean>(true);
   
   // Indicator management
   const { 
@@ -164,6 +165,8 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
   // Initialize chart
   useEffect(() => {
     if (!chartContainerRef.current) return;
+
+    isMountedRef.current = true;
 
     // Create the chart
     chart.current = createChart(chartContainerRef.current, {
@@ -266,6 +269,9 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
     window.addEventListener('resize', handleResize);
 
     return () => {
+      // Mark as unmounted to prevent state updates
+      isMountedRef.current = false;
+      
       // Clear intervals first to prevent memory leaks
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -332,6 +338,9 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
 
   // Fetch candle data from Python API
   const fetchCandleData = async () => {
+    // Don't fetch if component is unmounted
+    if (!isMountedRef.current) return false;
+    
     try {
       setError(null);
       // Determine API endpoint based on asset
@@ -404,6 +413,9 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
           };
         });
 
+        // Only update state if component is still mounted
+        if (!isMountedRef.current) return false;
+        
         if (candlestickSeries.current) {
           candlestickSeries.current.setData(candleData);
           candleDataRef.current = candleData; // Store candle data for hover functionality
@@ -423,6 +435,8 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
       }
     } catch (err: any) {
       console.error('Error fetching candle data:', err);
+      // Only update state if component is still mounted
+      if (!isMountedRef.current) return false;
       setError(err.message || 'Failed to connect to Quotex API');
       setIsLoading(false);
       return false;
@@ -442,9 +456,11 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
       intervalRef.current = null;
     }
 
-    if (autoRefresh && !isLoading) {
+    if (autoRefresh && !isLoading && isMountedRef.current) {
       intervalRef.current = setInterval(() => {
-        fetchCandleData();
+        if (isMountedRef.current) {
+          fetchCandleData();
+        }
       }, refreshInterval);
     }
 
