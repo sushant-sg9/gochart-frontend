@@ -163,7 +163,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
     }
   }, [allMarkers]);
 
-  // Initialize chart
+  // Initialize chart - must recreate when asset changes
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
@@ -311,7 +311,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
       
       console.log('QuotexChart cleanup complete for asset:', asset);
     };
-  }, []);
+  }, [asset]); // Add asset as dependency to recreate chart when asset changes
 
   // Render small numeric labels above all volume bars
   function renderVolumeLabels() {
@@ -532,9 +532,14 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
     const minutes = seconds / 60;
     return `${minutes}m`;
   };
+  
+  // Don't render if unmounted
+  if (!isMountedRef.current) {
+    return null;
+  }
 
   return (
-    <div className="relative h-full w-full bg-slate-950">
+    <div className="relative h-full w-full bg-slate-950" style={{ pointerEvents: 'auto' }}>
       {/* Header with controls */}
       <div className="absolute top-2 left-2 z-10 flex items-center space-x-4 bg-slate-800/90 backdrop-blur-sm rounded-lg px-3 py-2 border border-slate-700/50">
         <div className="text-white text-sm font-medium">
