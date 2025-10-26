@@ -362,7 +362,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
   }
 
   // Fetch candle data from Python API
-  const fetchCandleData = async () => {
+  const fetchCandleData = useCallback(async () => {
     // Don't fetch if component is unmounted
     if (!isMountedRef.current) return false;
     
@@ -481,12 +481,14 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
       setIsLoading(false);
       return false;
     }
-  };
+  }, [asset, currentTimeframe, count]);
 
   // Initial data load
   useEffect(() => {
-    fetchCandleData();
-  }, [asset, currentTimeframe, count]);
+    if (isMountedRef.current) {
+      fetchCandleData();
+    }
+  }, [fetchCandleData]);
 
   // Auto-refresh setup
   useEffect(() => {
@@ -501,7 +503,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
         if (isMountedRef.current) {
           fetchCandleData();
         }
-      }, refreshInterval);
+      }, refreshInterval) as unknown as number;
     }
 
     return () => {
@@ -510,21 +512,25 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
         intervalRef.current = null;
       }
     };
-  }, [autoRefresh, refreshInterval, isLoading, currentTimeframe]);
+  }, [autoRefresh, refreshInterval, isLoading, fetchCandleData]);
 
   // Manual refresh handler
-  const handleRefresh = () => {
-    setIsLoading(true);
-    fetchCandleData();
-  };
+  const handleRefresh = useCallback(() => {
+    if (isMountedRef.current) {
+      setIsLoading(true);
+      fetchCandleData();
+    }
+  }, [fetchCandleData]);
 
   // Timeframe change handler
-  const handleTimeframeChange = (newTimeframe: number) => {
-    console.log(`Changing timeframe from ${currentTimeframe}s to ${newTimeframe}s`);
-    setCurrentTimeframe(newTimeframe);
-    setIsLoading(true);
-    setError(null); // Clear any previous errors
-  };
+  const handleTimeframeChange = useCallback((newTimeframe: number) => {
+    if (isMountedRef.current) {
+      console.log(`Changing timeframe from ${currentTimeframe}s to ${newTimeframe}s`);
+      setCurrentTimeframe(newTimeframe);
+      setIsLoading(true);
+      setError(null); // Clear any previous errors
+    }
+  }, [currentTimeframe]);
 
   // Format timeframe for display
   const formatTimeframe = (seconds: number) => {
