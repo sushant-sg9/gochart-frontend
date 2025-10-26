@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import QuotexChart from "../../components/charts/QuotexChart";
 
 interface QuotexPageProps {
@@ -17,6 +18,7 @@ const QuotexPage: React.FC<QuotexPageProps> = ({
   count = 200
 }) => {
   const isMountedRef = useRef(true);
+  const location = useLocation();
   
   // Cleanup effect to ensure proper unmounting
   useEffect(() => {
@@ -25,8 +27,14 @@ const QuotexPage: React.FC<QuotexPageProps> = ({
     return () => {
       isMountedRef.current = false;
       // Force cleanup any remaining intervals or event listeners
+      console.log('QuotexPage unmounting for asset:', asset);
     };
   }, [asset]);
+  
+  // Monitor location changes
+  useEffect(() => {
+    console.log('QuotexPage location:', location.pathname);
+  }, [location]);
 
   return (
     <div className="h-screen w-full flex flex-col bg-slate-950">
@@ -50,7 +58,7 @@ const QuotexPage: React.FC<QuotexPageProps> = ({
       {/* Chart Container */}
       <div className="flex-1 min-h-0">
         <QuotexChart 
-          key={asset}
+          key={`${asset}-${location.pathname}`}
           asset={asset}
           period={period}
           count={count}

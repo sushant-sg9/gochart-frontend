@@ -168,6 +168,7 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
     if (!chartContainerRef.current) return;
 
     isMountedRef.current = true;
+    console.log('QuotexChart mounting for asset:', asset);
 
     // Create the chart
     chart.current = createChart(chartContainerRef.current, {
@@ -270,28 +271,45 @@ const QuotexChart: React.FC<QuotexChartProps> = ({
     window.addEventListener('resize', handleResize);
 
     return () => {
-      // Mark as unmounted to prevent state updates
+      console.log('QuotexChart cleanup starting for asset:', asset);
+      
+      // IMMEDIATELY mark as unmounted to prevent any further operations
       isMountedRef.current = false;
       
-      // Cancel any pending requests
+      // Cancel any pending requests FIRST
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
       }
       
-      // Clear intervals first to prevent memory leaks
+      // Clear intervals IMMEDIATELY
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
       
+      // Clean up event listeners
       window.removeEventListener('resize', handleResize);
       try { chart.current?.timeScale().unsubscribeVisibleTimeRangeChange(handleVisibleRangeChange); } catch(e) {}
       try { chart.current?.unsubscribeCrosshairMove(handleCrosshairMove); } catch(e) {}
+      
+      // Remove chart instance
       if (chart.current) {
-        chart.current.remove();
+        try {
+          chart.current.remove();
+        } catch(e) {
+          console.warn('Error removing chart:', e);
+        }
         chart.current = null;
       }
+      
+      // Clear refs
+      candlestickSeries.current = null;
+      volumeSeries.current = null;
+      candleDataRef.current = [];
+      allVolumeRef.current = [];
+      
+      console.log('QuotexChart cleanup complete for asset:', asset);
     };
   }, []);
 
